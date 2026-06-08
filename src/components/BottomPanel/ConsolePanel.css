@@ -1,0 +1,73 @@
+.console-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #1a1a1a;
+  position: relative;
+}
+
+.console-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 26px;
+  padding: 0 8px;
+  border-bottom: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+}
+
+.console-panel__clear {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 11px;
+}
+.console-panel__clear:hover {
+  color: var(--text);
+}
+
+.console-panel__logs {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: 4px 8px;
+  font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.console-panel__empty {
+  color: #5a5a5a;
+}
+
+.console-line {
+  white-space: pre-wrap;
+  word-break: break-word;
+  border-bottom: 1px solid #232323;
+  padding: 1px 0;
+}
+.console-line--error {
+  color: #f48771;
+}
+.console-line--warn {
+  color: #cca700;
+}
+.console-line--info {
+  color: #75beff;
+}
+.console-line--system {
+  color: #6a9955;
+  font-style: italic;
+}
+
+/* Sandbox iframe host — present but visually collapsed (no preview UI yet). */
+.console-panel__sandbox {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}

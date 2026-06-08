@@ -1,0 +1,75 @@
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 36px;
+  flex: 0 0 36px;
+  padding: 0 12px;
+  background: #181818;
+  border-bottom: 1px solid #2b2b2b;
+  font-size: 12px;
+  user-select: none;
+}
+
+.topbar .brand {
+  font-weight: 600;
+  color: #e6e6e6;
+}
+
+.topbar .phase {
+  color: #8a8a8a;
+}
+
+.topbar__spacer {
+  flex: 1 1 auto;
+}
+
+.run-button {
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  padding: 3px 12px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 12px;
+}
+.run-button:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+.run-button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.editor-wrap {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.body {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.empty-editor {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* allotment dark theme variables */
+:root {
+  --focus-border: var(--accent);
+  --separator-border: var(--border);
+}

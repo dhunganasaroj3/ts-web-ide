@@ -1,0 +1,78 @@
+.file-tree {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--sidebar);
+  font-size: 13px;
+  user-select: none;
+}
+
+.file-tree__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 28px;
+  padding: 0 8px;
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border);
+}
+
+.file-tree__actions button {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 2px 4px;
+  line-height: 1;
+}
+.file-tree__actions button:hover {
+  color: var(--text);
+}
+
+.file-tree__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.file-tree__row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 100%;
+  padding-right: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  color: var(--text);
+}
+.file-tree__row:hover {
+  background: #2a2d2e;
+}
+.file-tree__row--selected {
+  background: #094771;
+}
+
+.file-tree__icon {
+  width: 12px;
+  text-align: center;
+  color: var(--muted);
+  flex: 0 0 12px;
+}
+
+.file-tree__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-tree__input {
+  background: #3c3c3c;
+  border: 1px solid var(--accent);
+  color: var(--text);
+  font: inherit;
+  padding: 0 2px;
+  width: 100%;
+  outline: none;
+}
