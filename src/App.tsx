@@ -12,7 +12,7 @@ import { OutlinePanel } from './components/Sidebar/OutlinePanel'
 import { EditorDock } from './components/EditorArea/EditorDock'
 import { ConsolePanel } from './components/BottomPanel/ConsolePanel'
 import { ErrorBoundary } from './components/ErrorBoundary'
-import { disposeModel, renameModel } from './services/monaco/models'
+import { disposeModel, preloadModels, renameModel } from './services/monaco/models'
 import { exists } from './services/fs/zenfs'
 import { loadWorkspace, saveWorkspace } from './services/persist/workspace'
 import './App.css'
@@ -34,6 +34,9 @@ function App() {
     if (!fsApi.ready || restored.current) return
     restored.current = true
     void (async () => {
+      // Preload models for the whole project so cross-file imports resolve
+      // from the start (avoids stale "Cannot find module" markers).
+      await preloadModels()
       const meta = loadWorkspace()
       if (!meta) return
       // Drop any tabs whose files no longer exist.

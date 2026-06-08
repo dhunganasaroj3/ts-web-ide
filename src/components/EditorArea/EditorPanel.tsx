@@ -13,6 +13,7 @@ import { monaco } from '../../monaco-env'
 import { getOrCreateModel } from '../../services/monaco/models'
 import { readFile, writeFile } from '../../services/fs/zenfs'
 import { acquireTypesFromSource } from '../../services/monaco/typeAcquisition'
+import { revalidateDiagnostics } from '../../services/monaco/compiler'
 
 // Per-file view state (cursor/scroll/folding), preserved across mounts.
 const viewStateCache = new Map<
@@ -66,6 +67,10 @@ export function EditorPanel(props: IDockviewPanelProps<EditorPanelParams>) {
       const vs = viewStateCache.get(path)
       if (vs) editor.restoreViewState(vs)
       editor.focus()
+
+      // Clear any stale cross-file diagnostics now that this model (and any
+      // siblings preloaded since) are present in the language service.
+      revalidateDiagnostics()
 
       // Kick off best-effort type acquisition for any bare imports.
       acquireTypesFromSource(model.getValue())

@@ -41,7 +41,7 @@ async function freshLoad() {
       ),
     )
   })
-  await page.reload({ waitUntil: 'networkidle' })
+  await page.reload({ waitUntil: 'domcontentloaded' })
 }
 
 async function writeVfs(path, content) {
@@ -75,7 +75,7 @@ try {
 
   // Persistence of a created file across reload.
   await writeVfs('/persist-check.ts', 'export const x = 1\n')
-  await page.reload({ waitUntil: 'networkidle' })
+  await page.reload({ waitUntil: 'domcontentloaded' })
   await treeItem('persist-check.ts').waitFor({ timeout: 10000 }).catch(() => {})
   check('created file persists across reload (IndexedDB)', (await treeItem('persist-check.ts').count()) > 0)
 
@@ -149,6 +149,18 @@ try {
   )
   check('greeter.ts model survives tab close (not disposed)', beforeClose && afterClose)
 
+  // Rendered-UI check: the seeded index.ts must show NO red error squiggle
+  // (a stale cross-file TS2307 marker would render even when the worker has
+  // since resolved the import). Reopen index.ts and give it time to settle.
+  await treeItem('index.ts').click()
+  let squiggles = 1
+  for (let i = 0; i < 12; i++) {
+    squiggles = await page.locator('.squiggly-error').count()
+    if (squiggles === 0) break
+    await page.waitForTimeout(500)
+  }
+  check('no stale error squiggle on seeded index.ts (rendered)', squiggles === 0)
+
   // ---- Phase 3: execution ----
   const runBtn = page.getByRole('button', { name: /Run/ })
 
@@ -199,7 +211,7 @@ try {
   await treeItem('index.ts').click()
   await treeItem('greeter.ts').click()
   await page.waitForTimeout(600) // let debounced persist fire
-  await page.reload({ waitUntil: 'networkidle' })
+  await page.reload({ waitUntil: 'domcontentloaded' })
   await page.locator('.dv-tab', { hasText: 'greeter.ts' }).first().waitFor({ timeout: 12000 }).catch(() => {})
   check(
     'open tabs are restored after reload',

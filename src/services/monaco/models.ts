@@ -13,7 +13,8 @@
  *     switch via the editor, not the model.
  */
 import { monaco } from '../../monaco-env'
-import { languageFor } from '../fs/zenfs'
+import { fs } from '@zenfs/core'
+import { joinPath, languageFor } from '../fs/zenfs'
 
 function uriFor(path: string): import('monaco-editor').Uri {
   // path is absolute & POSIX, e.g. "/src/index.ts" -> file:///src/index.ts
@@ -35,6 +36,48 @@ export function getModel(
   path: string,
 ): import('monaco-editor').editor.ITextModel | null {
   return monaco.editor.getModel(uriFor(path))
+}
+
+/**
+ * Create a model for every TS/JS/JSON file in the workspace so the TypeScript
+ * language service sees the whole project up front. Without this, opening a file
+ * that imports a not-yet-opened sibling produces a stale "Cannot find module"
+ * (TS2307) marker that never clears, because Monaco only validates a file when
+ * its own content changes.
+ */
+export async function preloadModels(): Promise<void> {
+  const exts = /\.(ts|tsx|js|jsx|mjs|cjs|json)$/i
+  const walk = async (dir: string): Promise<void> => {
+    let names: string[]
+    try {
+      names = await fs.promises.readdir(dir)
+    } catch {
+      return
+    }
+    for (const name of names) {
+      const path = joinPath(dir, name)
+      let isDir: boolean
+      try {
+        isDir = (await fs.promises.stat(path)).isDirectory()
+      } catch {
+        continue
+      }
+      if (isDir) {
+        if (name === 'node_modules') continue
+        await walk(path)
+      } else if (exts.test(name)) {
+        if (!monaco.editor.getModel(uriFor(path))) {
+          try {
+            const content = await fs.promises.readFile(path, 'utf8')
+            monaco.editor.createModel(content, languageFor(path), uriFor(path))
+          } catch {
+            /* skip unreadable file */
+          }
+        }
+      }
+    }
+  }
+  await walk('/')
 }
 
 /** Dispose a model — call ONLY when the underlying file is deleted. */

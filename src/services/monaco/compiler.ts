@@ -49,3 +49,19 @@ export function configureTypeScript() {
   typescriptDefaults.setDiagnosticsOptions(diagnosticsOptions)
   javascriptDefaults.setDiagnosticsOptions(diagnosticsOptions)
 }
+
+/**
+ * Force the TS/JS workers to re-validate all open models. Re-applying the
+ * diagnostics options invalidates cached diagnostics, which clears stale
+ * cross-file errors (e.g. a "Cannot find module" marker set before the imported
+ * file's model existed).
+ */
+export function revalidateDiagnostics() {
+  const opts = {
+    noSemanticValidation: false,
+    noSyntaxValidation: false,
+    noSuggestionDiagnostics: false,
+  }
+  typescript.typescriptDefaults.setDiagnosticsOptions(opts)
+  typescript.javascriptDefaults.setDiagnosticsOptions(opts)
+}
