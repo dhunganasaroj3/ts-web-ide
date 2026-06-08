@@ -62,14 +62,18 @@ function srcdocFor(runId: string, code: string): string {
     });
   `
 
+  // The bundled code is an ES module and may contain top-level `export`
+  // statements (esbuild preserves the entry module's exports). `export` is only
+  // legal at the top level of a module, so the code must NOT be wrapped in a
+  // try/catch block. Synchronous throws and rejected promises are already
+  // captured by the window 'error' / 'unhandledrejection' listeners installed in
+  // the bootstrap. A second module script signals completion after the first.
   return `<!doctype html><html><head><meta charset="utf-8"></head><body>
 <script>${bootstrap}</script>
 <script type="module">
-try {
 ${code}
-} catch (err) {
-  parent.postMessage({ channel: 'ts-web-ide-sandbox', runId: ${JSON.stringify(runId)}, kind: 'error', level: 'error', text: (err && err.stack) ? err.stack : String(err) }, '*');
-}
+</script>
+<script type="module">
 parent.postMessage({ channel: 'ts-web-ide-sandbox', runId: ${JSON.stringify(runId)}, kind: 'done' }, '*');
 </script>
 </body></html>`

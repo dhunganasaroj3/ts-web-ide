@@ -58,8 +58,11 @@ try {
   await freshLoad()
 
   // ---- Phase 1: FS + tree ----
+  // react-arborist renders rows progressively, so wait for each seeded file to
+  // appear rather than sampling its count the instant the first row shows.
   await treeItem('index.ts').waitFor({ timeout: 15000 })
   check('file tree renders seeded index.ts', true)
+  await treeItem('greeter.ts').waitFor({ timeout: 15000 }).catch(() => {})
   check('file tree renders seeded greeter.ts', (await treeItem('greeter.ts').count()) > 0)
 
   await treeItem('index.ts').click()
