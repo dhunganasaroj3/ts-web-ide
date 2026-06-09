@@ -5,7 +5,7 @@
  * The console can optionally live here as a reserved, non-file panel
  * (`CONSOLE_PANEL_ID`) when its placement is "tab".
  */
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
   DockviewReact,
   type DockviewApi,
@@ -49,6 +49,11 @@ export function EditorDock({
   const apiRef = useRef<DockviewApi | null>(null)
   // Guard so programmatic changes don't echo back as user actions.
   const syncing = useRef(false)
+  // Bumped each time a (possibly new) dockview becomes ready. Changing console
+  // placement remounts this component and recreates DockviewReact from scratch,
+  // so the reconcile effects must re-run against the fresh, empty api to
+  // repopulate panels — otherwise the editor area renders blank.
+  const [ready, setReady] = useState(0)
   // Keep the latest callback without re-running the ready effect.
   const onConsoleTabClosedRef = useRef(onConsoleTabClosed)
   useEffect(() => {
@@ -59,6 +64,7 @@ export function EditorDock({
     const api = event.api
     apiRef.current = api
     onApiReady?.(api)
+    setReady((n) => n + 1)
 
     api.onDidActivePanelChange((panel) => {
       if (syncing.current) return
@@ -107,7 +113,7 @@ export function EditorDock({
     } finally {
       syncing.current = false
     }
-  }, [openFiles.openPaths, openFiles.activePath])
+  }, [openFiles.openPaths, openFiles.activePath, ready])
 
   // Add/remove the reserved console panel as placement toggles.
   useEffect(() => {
@@ -129,7 +135,7 @@ export function EditorDock({
     } finally {
       syncing.current = false
     }
-  }, [consoleAsTab, runner])
+  }, [consoleAsTab, runner, ready])
 
   return (
     <div style={{ width: '100%', height: '100%' }}>
