@@ -11,6 +11,10 @@ import { useEffect, useRef } from 'react'
 import type { IDockviewPanelProps } from 'dockview-react'
 import { monaco } from '../../monaco-env'
 import { getOrCreateModel } from '../../services/monaco/models'
+import {
+  clearActiveEditor,
+  setActiveEditor,
+} from '../../services/monaco/activeEditor'
 import { readFile, writeFile } from '../../services/fs/zenfs'
 import { acquireTypesFromSource } from '../../services/monaco/typeAcquisition'
 import { revalidateDiagnostics } from '../../services/monaco/compiler'
@@ -47,6 +51,10 @@ export function EditorPanel(props: IDockviewPanelProps<EditorPanelParams>) {
       model: null,
     })
     editorRef.current = editor
+
+    // Track the focused editor so top-level actions (Format) can target it.
+    setActiveEditor(editor)
+    const focusSub = editor.onDidFocusEditorText(() => setActiveEditor(editor))
 
     // Load content from the FS, attach the shared model, restore view state.
     void (async () => {
@@ -88,6 +96,8 @@ export function EditorPanel(props: IDockviewPanelProps<EditorPanelParams>) {
     return () => {
       disposed = true
       clearTimeout(saveTimer)
+      focusSub.dispose()
+      clearActiveEditor(editor)
       // Persist view state, flush pending content, then dispose the EDITOR
       // (the view) — never the model.
       viewStateCache.set(path, editor.saveViewState())

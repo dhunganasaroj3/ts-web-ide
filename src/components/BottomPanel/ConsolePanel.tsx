@@ -1,5 +1,9 @@
 /**
- * Console output panel + the (offscreen) sandbox iframe host.
+ * Console output panel (log view only).
+ *
+ * The sandbox iframe host lives in App.tsx so it stays mounted regardless of
+ * where the console is placed (bottom / right drawer / dockview tab). This panel
+ * is therefore free to be mounted in any of those locations.
  */
 import { useEffect, useRef } from 'react'
 import type { RunnerApi } from '../../hooks/useRunner'
@@ -10,12 +14,7 @@ interface ConsolePanelProps {
 }
 
 export function ConsolePanel({ runner }: ConsolePanelProps) {
-  const hostRef = useRef<HTMLDivElement | null>(null)
   const bottomRef = useRef<HTMLDivElement | null>(null)
-
-  useEffect(() => {
-    runner.setHost(hostRef.current)
-  }, [runner])
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ block: 'end' })
@@ -45,8 +44,6 @@ export function ConsolePanel({ runner }: ConsolePanelProps) {
         ))}
         <div ref={bottomRef} />
       </div>
-      {/* The sandbox iframe lives here, kept invisible (no UI preview yet). */}
-      <div ref={hostRef} className="console-panel__sandbox" aria-hidden />
     </div>
   )
 }

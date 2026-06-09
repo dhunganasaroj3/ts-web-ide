@@ -62,12 +62,7 @@
   color: #6a9955;
   font-style: italic;
 }
-
-/* Sandbox iframe host — present but visually collapsed (no preview UI yet). */
-.console-panel__sandbox {
-  position: absolute;
-  width: 0;
-  height: 0;
-  overflow: hidden;
-  pointer-events: none;
+/* Error lines (incl. multi-line stacks) keep their formatting via pre-wrap. */
+.console-line--error {
+  font-variant-ligatures: none;
 }

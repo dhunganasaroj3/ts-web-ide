@@ -15,10 +15,15 @@ export interface LogEntry {
   text: string
 }
 
+export interface RunOptions {
+  /** Surface a DevTools hint so user-placed `debugger;` statements are useful. */
+  debug?: boolean
+}
+
 export interface RunnerApi {
   logs: LogEntry[]
   running: boolean
-  run: (entry: string) => Promise<void>
+  run: (entry: string, opts?: RunOptions) => Promise<void>
   clear: () => void
   /** Attach the iframe host element (the preview/output container). */
   setHost: (el: HTMLElement | null) => void
@@ -60,12 +65,19 @@ export function useRunner(): RunnerApi {
   const clear = useCallback(() => setLogs([]), [])
 
   const run = useCallback(
-    async (entry: string) => {
+    async (entry: string, opts?: RunOptions) => {
       clear()
       setRunning(true)
       const runId = `run-${++runCounter}`
       currentRunId.current = runId
 
+      if (opts?.debug) {
+        append(
+          'system',
+          'Debug mode: open your browser DevTools (F12). `debugger;` statements ' +
+            'will pause execution, and stack traces map to your source files.',
+        )
+      }
       append('system', `Bundling ${entry}…`)
       const result = await bundle(entry)
 

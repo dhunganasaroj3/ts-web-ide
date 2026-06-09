@@ -6,10 +6,13 @@
  */
 const KEY = 'ts-web-ide:workspace'
 
+export type ConsolePlacement = 'bottom' | 'right' | 'tab'
+
 export interface WorkspaceMeta {
   openPaths: string[]
   activePath: string | null
   dockviewLayout?: unknown
+  consolePlacement?: ConsolePlacement
 }
 
 export function loadWorkspace(): WorkspaceMeta | null {
