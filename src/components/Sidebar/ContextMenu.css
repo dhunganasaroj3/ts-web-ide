@@ -1,0 +1,42 @@
+.ctx-menu {
+  position: fixed;
+  z-index: 1000;
+  min-width: 180px;
+  background: var(--sidebar);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 4px 0;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+  font-size: 13px;
+  user-select: none;
+}
+
+.ctx-menu__item {
+  display: block;
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  padding: 4px 12px;
+  line-height: 1.4;
+}
+.ctx-menu__item:hover {
+  background: #094771;
+}
+
+.ctx-menu__item--danger {
+  color: #f48771;
+}
+.ctx-menu__item--danger:hover {
+  background: #5a1d1d;
+  color: #ffb4a3;
+}
+
+.ctx-menu__sep {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0;
+}

@@ -4,10 +4,15 @@ A **100% frontend** (no backend) multi-file TypeScript IDE that runs entirely in
 the browser — edit, type-check, and execute TypeScript/JavaScript projects with
 no server. React + Vite.
 
+**🔗 Live demo:** https://dhunganasaroj3.github.io/ts-web-ide/
+
 ## Features
 
 - **Multi-file editor** with a VS Code–style shell: file tree, dockable editor
   tabs, split panes, and a console panel.
+- **File explorer operations** — right-click any file/folder (or empty space)
+  for a context menu: New File, New Folder, Rename, Duplicate, Copy Path, and
+  Delete (with confirm). Delete/Backspace removes the selected item too.
 - **Full TypeScript type-checking, IntelliSense & JSDoc inference** via Monaco's
   TypeScript language service (e.g. `/** @returns {string} */` is checked).
 - **Cross-file imports** resolve between virtual files (go-to-definition,

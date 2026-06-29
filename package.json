@@ -10,6 +10,7 @@
     "preview": "vite preview",
     "verify": "node scripts/verify.mjs",
     "verify:features": "node scripts/verify-features.mjs",
+    "verify:filetree": "node scripts/verify-filetree.mjs",
     "verify:prod": "node scripts/verify-prod.mjs"
   },
   "dependencies": {
